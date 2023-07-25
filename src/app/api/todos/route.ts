@@ -1,6 +1,8 @@
+
+import prisma from "@/lib/prisma";
 import { NextResponse, NextRequest } from "next/server";
 import * as yup from "yup";
-import prisma from "../../../../lib/prisma";
+
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -43,6 +45,14 @@ export async function POST(request: Request) {
     const todo = await prisma.todo.create({ data: { complete, description } });
 
     return NextResponse.json(todo);
+  } catch (error) {
+    return NextResponse.json(error, { status: 400 });
+  }
+}
+export async function DELETE(request: Request) {
+  try {
+    await prisma.todo.deleteMany({ where: { complete: true } });
+    return NextResponse.json("Borrados");
   } catch (error) {
     return NextResponse.json(error, { status: 400 });
   }
